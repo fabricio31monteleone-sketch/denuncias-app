@@ -1,21 +1,14 @@
 {
-  "dependencies": {
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "multer": "^2.3.0",
-    "nodemailer": "^9.1.1"
-  },
-  "name": "denunciasapp",
+  "name": "denuncias-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "App de denuncias vecinales Avellaneda",
   "main": "server.js",
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs"
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "resend": "^3.2.0"
+  }
 }
