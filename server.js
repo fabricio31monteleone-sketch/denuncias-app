@@ -9,18 +9,16 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.static(path.join(__dirname)));
 
-// Configuración adaptada para servidores en la nube (Render)
+// Configuración directa de Gmail optimizada para Render
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false, // TLS / STARTTLS
+  service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
   },
-  tls: {
-    rejectUnauthorized: false
-  }
+  connectionTimeout: 20000, // 20 segundos de espera máxima
+  greetingTimeout: 20000,
+  socketTimeout: 30000
 });
 
 app.post('/api/denuncia', async (req, res) => {
@@ -43,7 +41,7 @@ app.post('/api/denuncia', async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-    console.log('📧 Correo enviado con éxito desde Render.');
+    console.log('📧 Correo enviado con éxito.');
     res.status(200).json({ success: true, message: 'Reclamo enviado correctamente' });
   } catch (error) {
     console.error('❌ Error al enviar correo:', error);
