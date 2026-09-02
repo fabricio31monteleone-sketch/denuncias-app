@@ -9,20 +9,17 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.static(path.join(__dirname)));
 
+// Configuración adaptada para servidores en la nube (Render)
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false, // TLS / STARTTLS
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
-  }
-});
-
-// Verificación de conexión al arrancar el servidor
-transporter.verify((error, success) => {
-  if (error) {
-    console.error('❌ ERROR DE AUTENTICACIÓN CON GMAIL:', error.message);
-  } else {
-    console.log('✅ Conexión exitosa con Gmail. Listo para enviar correos.');
+  },
+  tls: {
+    rejectUnauthorized: false
   }
 });
 
@@ -46,15 +43,15 @@ app.post('/api/denuncia', async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-    console.log('📧 Correo enviado con éxito.');
+    console.log('📧 Correo enviado con éxito desde Render.');
     res.status(200).json({ success: true, message: 'Reclamo enviado correctamente' });
   } catch (error) {
-    console.error('❌ Error detallado al enviar correo:', error);
+    console.error('❌ Error al enviar correo:', error);
     res.status(500).json({ success: false, message: 'Error al procesar el envío: ' + error.message });
   }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
