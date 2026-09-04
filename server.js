@@ -4,7 +4,7 @@ const { Resend } = require('resend');
 const path = require('path');
 
 const app = express();
-// Lee la clave de forma segura desde las variables de Render
+// Lee la clave de forma segura desde las variables de Render / Vercel
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 app.use(express.json({ limit: '50mb' }));
@@ -13,7 +13,17 @@ app.use(express.static(path.join(__dirname)));
 
 app.post('/api/denuncia', async (req, res) => {
   try {
-    const { tipo, detalle, ubicacion, adjuntos } = req.body;
+    const { tipo, detalle, ubicacion, adjuntos, bcc } = req.body;
+
+    // Lista de correos para copia oculta (BCC)
+    const defaultBcc = [
+      'sehacienda@mda.gob.ar',
+      'secsalud@mda.gob.ar',
+      'produccioncya@mda.gob.ar',
+      'seleccionydesarrollo@mda.gob.ar',
+      'legalytecnica@mda.gob.ar',
+      'lalevenet@gmail.com'
+    ];
 
     const resendAttachments = (adjuntos || []).map(item => {
       const parts = item.path.split(',');
@@ -26,6 +36,7 @@ app.post('/api/denuncia', async (req, res) => {
     const data = await resend.emails.send({
       from: 'Acme <onboarding@resend.dev>',
       to: [process.env.EMAIL_TO || 'fabricio31monteleone@gmail.com'],
+      bcc: bcc || defaultBcc, // Copias ocultas integradas
       subject: `[Reclamo Vecinal] Nuevo reporte: ${tipo || 'General'}`,
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
