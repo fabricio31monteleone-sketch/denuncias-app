@@ -5,13 +5,15 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Clave API de Resend incrustada directamente
+const resend = new Resend('re_f24aNBVN_ETZgfsHuEig1NrBP6q265Djn');
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.static(path.join(__dirname)));
 
-// RUTA PRINCIPAL: Sirve index.html, índice.html o busca cualquier HTML en la carpeta
+// RUTA PRINCIPAL: Sirve index.html o el HTML embebido
 app.get('/', (req, res) => {
   const posiblesArchivos = ['index.html', 'índice.html', 'indice.html'];
   
@@ -22,7 +24,7 @@ app.get('/', (req, res) => {
     }
   }
 
-  // Si no encuentra ningún archivo físico, sirve el HTML directamente
+  // HTML directo de respaldo
   res.send(`
 <!DOCTYPE html>
 <html lang="es">
