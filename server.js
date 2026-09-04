@@ -4,14 +4,14 @@ const { Resend } = require('resend');
 const path = require('path');
 
 const app = express();
-// Lee la clave de forma segura desde las variables de Render / Vercel
+// Lee la clave de forma segura desde las variables de entorno
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.static(path.join(__dirname)));
 
-// RUTA RAÍZ: Muestra el archivo index.html
+// Servir directamente la página principal
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
