@@ -76,7 +76,6 @@
       min-height: 90px;
     }
     
-    /* Botones de Captura Multimedia */
     .media-buttons {
       display: flex;
       gap: 10px;
@@ -195,7 +194,6 @@
     <button type="button" class="btn-option" id="btnSeguridad" onclick="seleccionarTipo('seguridad')">Delitos / Seguridad</button>
   </div>
 
-  <!-- FORMULARIO MUNICIPAL -->
   <form id="formMunicipal">
     <div class="form-group">
       <label for="tipo">Tipo de Reclamo</label>
@@ -214,7 +212,6 @@
       <textarea id="detalle" placeholder="Escriba aquí los detalles..." required></textarea>
     </div>
 
-    <!-- CAPTURA FOTO Y VIDEO -->
     <div class="form-group">
       <label>Evidencia Multimedia (Máx. 3 fotos o 1 video de 30s)</label>
       <div class="media-buttons">
@@ -223,7 +220,6 @@
       </div>
       <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" multiple onchange="agregarFotos(this.files)">
       
-      <!-- Vista previa -->
       <div class="preview-container" id="previewContainer"></div>
     </div>
 
@@ -235,7 +231,6 @@
     <button type="button" class="btn-submit" id="btnEnviar" onclick="enviarDenuncia()">Enviar Reclamo</button>
   </form>
 
-  <!-- TARJETA SEGURIDAD GBA -->
   <div id="cardSeguridad" class="card-seguridad">
     <h3>Portal Oficial de Denuncias Anónimas</h3>
     <p>Para denuncias relacionadas con <strong>delitos, robo, narcotráfico o violencia</strong>, el Gobierno de la Provincia de Buenos Aires dispone de una plataforma oficial 100% anónima y segura.</p>
@@ -246,18 +241,16 @@
 </div>
 
 <script>
-  let listaArchivos = []; // Array para almacenar fotos Base64
+  let listaArchivos = [];
   let mediaRecorder;
   let recordedChunks = [];
   let isRecording = false;
   let timerTimeout;
 
-  // Registrar Service Worker para PWA
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW reg error:', err));
   }
 
-  // Obtener ubicación GPS
   navigator.geolocation.getCurrentPosition(
     (pos) => {
       document.getElementById('ubicacion').value = `${pos.coords.latitude}, ${pos.coords.longitude}`;
@@ -287,7 +280,6 @@
     }
   }
 
-  // Gestión de Fotos
   async function agregarFotos(files) {
     if (listaArchivos.length + files.length > 3) {
       alert('Solo puedes adjuntar hasta 3 fotos.');
@@ -300,7 +292,6 @@
     actualizarVistaPrevia();
   }
 
-  // Grabar Video de hasta 30 segundos
   async function toggleGrabarVideo() {
     const btnRecord = document.getElementById('btnRecord');
 
@@ -326,7 +317,6 @@
         btnRecord.classList.add('recording');
         btnRecord.innerText = '⏹️ Detener Grabar (Max 30s)';
 
-        // Límite automático de 30 segundos
         timerTimeout = setTimeout(() => {
           if (isRecording) toggleGrabarVideo();
         }, 30000);
@@ -388,7 +378,6 @@
     btnEnviar.innerText = 'Enviando...';
     btnEnviar.disabled = true;
 
-    // Correos especificados para Copia Oculta (BCC)
     const bccEmails = [
       'sehacienda@mda.gob.ar',
       'secsalud@mda.gob.ar',
@@ -412,7 +401,7 @@
           detalle, 
           ubicacion, 
           adjuntos: adjuntosFormatted,
-          bcc: bccEmails // Envía la lista de copias ocultas al endpoint del servidor
+          bcc: bccEmails
         })
       });
 
